@@ -34,3 +34,4 @@ while True:
         print("GARCIAS POR USAR EL PROGRAMA")
         break
     
+print("Utilizado el progama para tupla y lista")
