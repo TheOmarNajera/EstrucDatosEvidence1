@@ -4,11 +4,9 @@ from functions.directorio import directorio
 
 cut = "\n" + "_"*50 + "\n"
 usuario = input("¿Cuál es tu nombre? ")
-
-dirnew = "Escriba el directorio (ej. C:\\users\\example): "
+dirnew = "Escriba el directorio a donde quiera ir (ej. C:\\users\\example): "
 
 print(f"\n¡Hola {usuario}! ¿Qué deseas hacer?\n")
-
 
 while True:
     print("""Menú principal
@@ -43,44 +41,40 @@ while True:
                 print("Directorio Inválido. Intente de nuevo.")
                 
     elif op == "3":
-        print(f'\nEl directorio actual es: {os.getcwd()}{cut}')
-        n = directorio(nowdir=os.getcwd()).showfile()
+        print(f'\nEl directorio actual es: {os.getcwd()}{cut}') 
+        b = directorio(nowdir=os.getcwd()).showfile() #usamos la user defined function que crea una lista de los archivos
+        n = []
+        for i in b: #se filtran los archivos dejando entrar a la lista vacía solo los archivos y no las carpetas con la funcion isfile de os
+            if os.path.isfile(i) == True:
+                n.append(i)
+                
         con = 0
         print("Archivos de tu carpeta: ")
 
-        if len(n) > 0:
-
-            for a in n:
+        if len(n) > 0: 
+            for a in n: #se enumera cada valor de la lista ya filtrada, para que ya enumarados el usuario pueda escogerlo proporcionando un numero
                 con += 1
                 print(f"{con}: {a}")
-
             try:
                 archi = int(input("\nSeleccione un archivo de la anterior lista: "))
-
-                if (archi - 1) in range(len(n)):
+                if os.path.isfile(n[(archi-1)]):
                     archivo = n[(archi-1)]
-
                     while True:
-                        op2 = input("¿Qué deseas hacer?\n1. Copiar Archivo\n2. Mover Archivo\n")
+                        op2 = input("¿Qué deseas hacer?\n1. Copiar Archivo (reescribirá si un archivo igual se encuentra ahí) \n2. Mover Archivo (si se encuentra un archivo igual, no podrás moverlo a esa ubicacion)) \n")
                         move = input(dirnew)
-    
-                        try:
+                        if os.path.exists(move):
                             if op2 == "1":
-                                directorio(newdir=move,arcsel=archivo).copy()
+                                directorio(newdir=move,arcsel=archivo).copy() #se usa la UDF copy la cual usa la función copy del modulo shutil
                                 break
-
                             elif op2 == "2":
-                                directorio(newdir=move,arcsel=archivo).move()
+                                directorio(newdir=move,arcsel=archivo).move() #se usa la UDF copy la cual usa la función move del modulo shutil
                                 break
-
                             else:
                                 print(f"Opción {op2} no válida.")
-
-                        except:
+                        else:
                             print("No existe el directorio a cambiar.")     
-
                 else:
-                    print(f"No hay archivo número {archi}.")
+                    print(f"{archi} no es un archivo.")
 
             except:
                 print(f"Ocurrió un problema {sys.exc_info()[0]}")
@@ -88,9 +82,7 @@ while True:
 
                 for elemento in Excepcion:
                     print(elemento)
-            
         else:
             print("No hay archivos en la carpeta actual.")
-
     else:
         print(f"La opción '{op}' no es válida.\nEliga una de las opciones correctas.{cut}")
